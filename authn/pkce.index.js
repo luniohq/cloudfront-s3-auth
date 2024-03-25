@@ -63,6 +63,14 @@ function mainProcess(event, context, callback) {
     config.AUTH_REQUEST.redirect_uri = event.Records[0].cf.config.test + config.CALLBACK_PATH;
     config.TOKEN_REQUEST.redirect_uri = event.Records[0].cf.config.test + config.CALLBACK_PATH;
   }
+  // Append index.html to the URI if it doesn't point to a file
+  if (!request.uri.match(/\/[^/]+\.[^/]+$/)) {
+    // Check if URI ends with a slash. If not, add one before appending index.html
+    if (!request.uri.endsWith('/')) {
+      request.uri += '/';
+    }
+    request.uri += 'index.html';
+  }
   if (request.uri.startsWith(config.CALLBACK_PATH)) {
     console.log("Callback from OIDC provider received");
 
